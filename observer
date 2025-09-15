@@ -1,0 +1,60 @@
+#include <iostream>
+#include <vector>
+#include <memory>
+using namespace std;
+
+class VitalObserver {
+public:
+	virtual void onLimitExceeding(const std::string& message) = 0;
+	virtual ~VitalObserver() = default;
+};
+
+class patient {
+private:
+	std::vector<std::shared_ptr<VitalObserver>> observer;
+	std::string name;
+	std::string status;
+
+public:
+	patient();
+	patient(const std::string& _name):name(_name){};
+
+	void addObserver(std::shared_ptr<VitalObserver> ob) {
+		observer.push_back(ob);
+	}
+
+	void changeStatus(const std::string& message) {
+		std::cout<<"status changed to "<<message<<std::endl;
+		onNotify(message);
+	}
+
+	void onNotify(const std::string& message) {
+		for(auto& a : observer) {
+			a->onLimitExceeding(message);
+		}
+	}
+};
+
+class BPInstrument : public VitalObserver {
+public:
+	void onLimitExceeding(const std::string& message) {
+		std::cout<<"patient BP increasing"<<std::endl;
+	}
+};
+
+
+class HBInstrument : public VitalObserver {
+public:
+	void onLimitExceeding(const std::string& message) {
+		std::cout<<"patient HB increasing"<<std::endl;
+	}
+};
+
+int main()
+{
+	patient pt("xyz");
+	pt.addObserver(std::make_shared<BPInstrument>());
+	pt.addObserver(std::make_shared<HBInstrument>());
+	pt.changeStatus("increasing");
+	return 0;
+}
