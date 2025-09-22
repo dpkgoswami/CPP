@@ -1,0 +1,38 @@
+#include <iostream>
+#include <vector>
+
+// Our simple Data struct
+struct Data {
+    int data;
+
+    // A constructor to show when an object is created
+    Data(int val) : data(val) {
+        std::cout << "Constructor called for: " << val << std::endl;
+    }
+
+    // A copy constructor to show when a copy is made
+    Data(const Data& other) : data(other.data) {
+        std::cout << "Copy constructor called for: " << other.data << std::endl;
+    }
+
+    // A move constructor to show when a move is made
+    Data(Data&& other) noexcept : data(other.data) {
+        std::cout << "Move constructor called for: " << other.data << std::endl;
+    }
+};
+
+int main() {
+    std::vector<Data> vec;
+    //vec.reserve(2); ////use reserve when you know the size to avoid multiple allocations and copy or move operations.
+    std::cout << "Using push_back:" << std::endl;
+    // 1. A temporary Data object is created
+    // 2. The temporary object is moved into the vector's memory
+    vec.push_back(Data(10));
+
+    std::cout << "\nUsing emplace_back:" << std::endl;
+    // The Data object is constructed directly inside the vector
+    vec.emplace_back(20);
+
+    return 0;
+}
+
