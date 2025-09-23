@@ -1,5 +1,5 @@
 #include <iostream>
-#include <expected>  //CPP 23
+#include <expected> //CPP 23
 
 std::expected<int, std::string> Divide(int a , int b){
     if(b == 0)
@@ -11,10 +11,11 @@ int main()
 {
     auto result = Divide(12,3).and_then([](int result)
              {
-             return Divide(result, 2);
+             return Divide(result, 0);
              })
              .or_else([](const std::string& error)
              {
+                 std::cout<<error<<std::endl;
                  return std::expected<int,std::string>{0};
              });
              
