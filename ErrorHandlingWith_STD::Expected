@@ -1,0 +1,27 @@
+#include <iostream>
+#include <expected>  //CPP 23
+
+std::expected<int, std::string> Divide(int a , int b){
+    if(b == 0)
+        return std::unexpected("Divide by zero!");
+    return a/b;
+}
+
+int main()
+{
+    auto result = Divide(12,3).and_then([](int result)
+             {
+             return Divide(result, 2);
+             })
+             .or_else([](const std::string& error)
+             {
+                 return std::expected<int,std::string>{0};
+             });
+             
+    if ( result )
+    {
+        std::cout<<*result<<std::endl;    
+    }
+    
+    return 0;
+}
