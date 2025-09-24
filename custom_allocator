@@ -1,0 +1,45 @@
+#include <iostream>
+
+template<typename T>
+struct MyAlloc {
+    using value_type = T;
+
+    T* allocate(size_t size) {
+        if (size == 0) {
+            return nullptr;
+        }
+        std::cout << "allocate " << size << " elements (" << size * sizeof(T) << " bytes)" << std::endl;
+        return new T[size];
+    }
+
+    void deallocate(T* p, size_t size) noexcept {
+        if (p == nullptr) {
+            return;
+        }
+        std::cout << "deallocate " << size << " elements (" << size * sizeof(T) << " bytes)" << std::endl;
+        delete[] p;
+    }
+    
+};
+
+
+// Example usage
+#include <vector>
+int main() {
+    std::vector<int, MyAlloc<int>> v;
+    //v.reserve(5); // This will call MyAlloc::allocate
+    v.push_back(10);
+    v.push_back(20);
+    v.push_back(30);
+    v.push_back(40);
+    v.push_back(50);
+    
+    std::cout << "Vector elements: " << std::endl;
+    for (int& val : v) {
+        std::cout << val << " ";
+    }
+    std::cout << std::endl;
+
+    // When v goes out of scope, its destructor will call MyAlloc::deallocate.
+    return 0;
+}
