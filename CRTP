@@ -1,0 +1,45 @@
+#include <iostream>
+template <typename DeriverT>
+class Base
+{
+    public:
+    void accessData(){
+        std::cout<<"calling derived function"<<std::endl;
+        DeriverT* var = static_cast<DeriverT*>(this);
+        var->initialize();
+        var->show();
+    }
+};
+
+class Derived1 : public Base<Derived1>{
+    public:
+    int data;
+    void initialize(){
+        data = 100;
+    }
+    void show(){
+        std::cout<<"data:"<<data<<std::endl;
+    }
+};
+
+class Derived2 : public Base<Derived2>{
+    public:
+    int data;
+    void initialize(){
+        data = 10000;
+    }
+    void show(){
+        std::cout<<"data:"<<data<<std::endl;
+    }
+};
+
+
+
+int main()
+{
+    Derived1 d1;
+    Derived2 d2;
+    d1.accessData();
+    d2.accessData();
+    return 0;
+}
